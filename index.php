@@ -7,7 +7,6 @@ if (isset($_GET['addcontact']))
   exit();
 }
 
-//include $_SERVER['DOCUMENT_ROOT'] . '/includes/db.inc.php';
 include '/includes/db.inc.php';
 if (isset($_POST['name'], $_POST['surname'], $_POST['birthday'], $_POST['phonenumber']))
 {
@@ -21,8 +20,8 @@ if (isset($_POST['name'], $_POST['surname'], $_POST['birthday'], $_POST['phonenu
 
     $lastId = $pdo->lastInsertId();
     $sql = 'INSERT INTO phone SET
-    phonenumber = :phonenumber,
-    staffid =  :staffid';
+              phonenumber = :phonenumber,
+              staffid =  :staffid';
     $s = $pdo->prepare($sql);
     $s->bindValue(':phonenumber', $_POST['phonenumber']);
     $s->bindValue(':staffid', $lastId);
@@ -36,7 +35,7 @@ if (isset($_POST['name'], $_POST['surname'], $_POST['birthday'], $_POST['phonenu
   exit();
 }
 
-
+include '/includes/db.inc.php';
 try
 {
   $sql = 'SELECT staff.id, name, surname, birthday, phonenumber FROM staff  INNER JOIN phone ON staffid = staff.id ';
@@ -44,21 +43,20 @@ try
 }
 catch (PDOException $e)
 {
-  $error = 'Ошибка вывода контактов: ' . $e->getMessagewert();
+  $error = 'Ошибка вывода контактов: ' . $e->getMessage();
   include 'error.html.php';
   exit();
 }
 
-$contacts = $result;
-// foreach ($result as $row)
-// {
-//   $contacts[] = array(
-//     'id' => $row['id'],
-//     'name' => $row['name'],
-//     'surname' => $row['surname'],
-//     'birthday' => $row['birthday'],
-//     'phonenumber' => $row['phonenumber']
-//     );
-// }
+foreach ($result as $row)
+{
+  $contacts[] = array(
+    'id' => $row['id'],
+    'name' => $row['name'],
+    'surname' => $row['surname'],
+    'birthday' => $row['birthday'],
+    'phonenumber' => $row['phonenumber']
+    );
+}
 
 include 'contacts.html.php';
